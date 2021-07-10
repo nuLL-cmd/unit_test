@@ -1,6 +1,8 @@
 package teste_unitario.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.hamcrest.CoreMatchers;
@@ -98,11 +100,14 @@ public class LocacaoServiceTest {
 		// 1 - cenário
 
 		Usuario usuario = new Usuario("Marco Aurelio");
-		Filme filme = new Filme("De volta para o futuro", 2, 5.0);
+
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
 		// 2 - ação
 
-		Locacao locacao = service.alugarFilme(usuario, filme);
+		Locacao locacao = service.alugarFilme(usuario, filmes);
 
 		// 3 - verificação
 
@@ -114,7 +119,7 @@ public class LocacaoServiceTest {
 		 * DataUtils.obterDataComDiferencaDias(1)));
 		 */
 
-		errorCollector.checkThat(locacao.getValor(), CoreMatchers.is(CoreMatchers.equalTo(5.0)));
+		errorCollector.checkThat(locacao.getValor(), CoreMatchers.is(5.0 * filmes.size()));
 		errorCollector.checkThat("Esperado um valor true", DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()),
 				CoreMatchers.is(true));
 		errorCollector.checkThat("Esperado um valor true",
@@ -136,11 +141,14 @@ public class LocacaoServiceTest {
 		// 1 - cenario
 
 		Usuario usuario = new Usuario("Marco Aurelio");
-		Filme filme = new Filme("De volta para o futuro", 0, 4.0);
+
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 
 		// 2 - ação
 
-		Locacao locacao = service.alugarFilme(usuario, filme);
+		Locacao locacao = service.alugarFilme(usuario, filmes);
 
 	}
 
@@ -158,12 +166,16 @@ public class LocacaoServiceTest {
 		// 1 - cenário
 
 		Usuario usuario = new Usuario("Eu sou o batman :D");
-		Filme filme = new Filme("Filme do Pelé", 0, 4.0);
+	
+
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 
 		// 2 - ação
 
 		try {
-			service.alugarFilme(usuario, filme);
+			service.alugarFilme(usuario, filmes);
 			Assert.fail("Deveria ter lançado uma exception");
 		} catch (Exception e) {
 
@@ -186,14 +198,16 @@ public class LocacaoServiceTest {
 		// cenario
 
 		Usuario usuario = new Usuario("Marco Aurelio");
-		Filme filme = new Filme("De volta para o futuro", 0, 5.0);
-
+		
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 		// ação
 
 		exp.expect(FilmeSemEstoqueException.class);
 		exp.expectMessage("Filme não tem estoque");
 
-		service.alugarFilme(usuario, filme);
+		service.alugarFilme(usuario, filmes);
 
 	}
 
@@ -206,12 +220,14 @@ public class LocacaoServiceTest {
 
 		// 1 - cenário
 
-		Filme filme = new Filme("Filme exemplo", 2, 4.0);
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
 		try {
 
 			// 2- ação
-			service.alugarFilme(null, filme);
+			service.alugarFilme(null, filmes);
 			Assert.fail("Deveria lançar uma exception aqui!");
 
 			// 3 - validação
@@ -231,12 +247,14 @@ public class LocacaoServiceTest {
 
 		// 1 - cenário
 
-		Filme filme = new Filme("Filme exemplo", 2, 4.0);
+		List<Filme> filmes = new ArrayList<>();
+		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
+		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
 		try {
 
 			// 2- ação
-			service.alugarFilme(null, filme);
+			service.alugarFilme(null, filmes);
 			Assert.fail("Deveria lançar uma exception aqui!");
 
 			// 3 - validação
@@ -261,7 +279,7 @@ public class LocacaoServiceTest {
 		/* 2 - ação / 3 - verificação */
 
 		exp.expect(LocadoraException.class);
-		exp.expectMessage("Filme vazio");
+		exp.expectMessage("Lista de filmes não pode estar vazia");
 
 		service.alugarFilme(usuario, null);
 	}
