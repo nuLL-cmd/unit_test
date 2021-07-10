@@ -1,14 +1,18 @@
 package teste_unitario.service;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
-
 
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
@@ -19,22 +23,72 @@ import teste_unitario.util.DataUtils;
 
 public class LocacaoServiceTest {
 
+	private LocacaoService service;
+	private static int count;
 	@Rule
 	public ErrorCollector errorCollector = new ErrorCollector();
 
 	@Rule
 	public ExpectedException exp = ExpectedException.none();
+
+	/*
+	 * A anotação @Before é usada para configurar execuções necessárias antes
+	 * de cada teste, ou seja, se tiver 5 testes dentro da classe, o @Before sera executado antes de todos
+	 * os 5 testes
+	 * */
+	@Before
+	public void before() {	
+		count ++;
+		System.out.println("Iniciou o teste: "+count);
+		service = new LocacaoService();
+
+	}
+
+	/*
+	 * A anotação @After é usada para configurar execuções necessárias depois
+	 * de cada teste, ou seja, se tiver 5 testes dentro da classe, o @After sera executado
+	 * depois de cada teste
+	 * */
+	@After
+	public void after() {
+		System.out.println("Finalizou o teste: "+count);
+	}
 	
 	
 	/*
-	 * Teste de validação de dados usando a classe ErrorCollector
+	 * A anotação @BeforeClass é usada para configurar execuções necessárias antes
+	 * dos testes apneas uma vez, ou seja, se tiver 5 testes dentro da classe, o @BeforeClass sera executado antes de todos
+	 * os 5 testes
 	 * */
+	@BeforeClass
+	public static void beforeClass() {
+		count = 0; 
+		System.out.println("Iniciou os testes.");
+		System.out.println("===========================");
+		
+	}
+	
+	/*
+	 * A anotação @AfterClass é usada para configurar execuções necessárias para toda a classe
+	 * apenas uma vez, ou seja, se tiver 5 testes dentro da classe, o @AfterClass sera executado
+	 * ao final de todos os 5 testes
+	 * */
+	@AfterClass
+	public static void AfterClass() {
+		System.out.println("===========================");
+		System.out.println("Total de testes executados: "+count);
+		
+	}
+	
+
+	/*
+	 * Teste de validação de dados usando a classe ErrorCollector
+	 */
 	@Test
 	public void firstTest() throws FilmeSemEstoqueException, LocadoraException {
 
 		// 1 - cenário
 
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Marco Aurelio");
 		Filme filme = new Filme("De volta para o futuro", 2, 5.0);
 
@@ -61,16 +115,18 @@ public class LocacaoServiceTest {
 
 	}
 
-	// Tratamento de exceptions - Forma elegante
-	// Colocando no expected a classe de exce??o esperada, voc? garante a
-	// acertividade do teste quanto ao lan?amento de exceptions - teste feito para simular uma falha e o tratamento
+	 /*
+	  * Tratamento de exceptions - Forma elegante
+	  * Colocando no expected a classe de exce??o esperada, voc? garante a
+	  * acertividade do teste quanto ao lan?amento de exceptions - teste feito para
+	  * simular uma falha e o tratamento
+	  * */
 
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void testLocacaoFilmeSemEstoque() throws FilmeSemEstoqueException, LocadoraException {
 
 		// 1 - cenario
 
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Marco Aurelio");
 		Filme filme = new Filme("De volta para o futuro", 0, 4.0);
 
@@ -78,25 +134,21 @@ public class LocacaoServiceTest {
 
 		Locacao locacao = service.alugarFilme(usuario, filme);
 
-
 	}
-	
 
-	/* 
+	/*
 	 * Segunda forma - Te da um controle maior sobre o teste, o que a primeira forma
-	 * No catch() será avaliado se a mensagem será a mesma da exception lançada, 
-	 * o que vier depois depois da exception ainda sera executado
-	 * Teste criado para simular uma exception.
-	 * O SEU SUCESSO ESTA NA FALHA.
+	 * No catch() será avaliado se a mensagem será a mesma da exception lançada, o
+	 * que vier depois depois da exception ainda sera executado Teste criado para
+	 * simular uma exception. O SEU SUCESSO ESTA NA FALHA.
 	 * 
 	 */
-	
+
 	@Test
 	public void testLocacaoFilmeSemEstoqueDois() {
 
 		// 1 - cenario
 
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Eu sou o batman :D");
 		Filme filme = new Filme("Filme do Pelé", 0, 4.0);
 
@@ -106,29 +158,27 @@ public class LocacaoServiceTest {
 			service.alugarFilme(usuario, filme);
 			Assert.fail("Deveria ter lançado uma exception");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 
-				// 3 - verificação
-			
+			// e.printStackTrace();
+
+			// 3 - verificação
+
 			Assert.assertThat(e.getMessage(), CoreMatchers.is("Filme não tem estoque"));
 		}
-		
-		System.out.println("Forma Robusta");
+
 	}
 
-	
 	/*
-	 * Teste exception de filme sem estoque usando agora a classe ExpectedException passando
-	 * antes do metodo que pode lançar a exception, a classe de exception que é esperada, e a mensagem.
+	 * Teste exception de filme sem estoque usando agora a classe ExpectedException
+	 * passando antes do metodo que pode lançar a exception, a classe de exception
+	 * que é esperada, e a mensagem.
 	 */
-	
+
 	@Test
 	public void testLocacaoFilmeSemEstoqueTres() throws FilmeSemEstoqueException, LocadoraException {
 
 		// cenario
 
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Marco Aurelio");
 		Filme filme = new Filme("De volta para o futuro", 0, 5.0);
 
@@ -136,82 +186,77 @@ public class LocacaoServiceTest {
 
 		exp.expect(FilmeSemEstoqueException.class);
 		exp.expectMessage("Filme não tem estoque");
-		
+
 		service.alugarFilme(usuario, filme);
-		
+
 	}
-	
-	
+
 	/*
-	 * Teste exception de usuario vazio usando
-	 *  o ErrorCollector dentro de um try catch
+	 * Teste exception de usuario vazio usando o ErrorCollector dentro de um try
+	 * catch
 	 */
 	@Test
-	public void testLocacaoUserVazioErrorCollector() throws FilmeSemEstoqueException{
-		
-		// 1 - cenario
-		
-		LocacaoService service = new LocacaoService();
-		Filme filme = new Filme("Filme exemplo",2,4.0);
-		
-		try {
-			
-			// 2- ação
-			service.alugarFilme(null, filme);
-			Assert.fail("Deveria lançar uma exception aqui!");
-			
-			// 3 - validação
-		}catch (LocadoraException e) {
-			e.printStackTrace();
-			errorCollector.checkThat(e.getMessage(), CoreMatchers.is(CoreMatchers.equalTo("Usuario vazio")));
-		}
-		
-	}
-	
-	/*
-	 * Teste exception de usuario vazio usando
-	 *  o Assert. assertThat dentro de um try catch
-	 */
-	@Test
-	public void testLocacaoUserVazioAssert() throws FilmeSemEstoqueException{
-		
-		// 1 - cenario
-		
-		LocacaoService service = new LocacaoService();
-		Filme filme = new Filme("Filme exemplo",2,4.0);
-		
-		try {
-			
-			// 2- ação
-			service.alugarFilme(null, filme);
-			Assert.fail("Deveria lançar uma exception aqui!");
-			
-			// 3 - validação
-		}catch (LocadoraException e) {
-			e.printStackTrace();
-			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
-		}
-		
-	}
-	
-	/*
-	 * Teste exception de usuario vazio usando
-	 *  o ExpectedException.
-	 */
-	
-	@Test
-	public void testFilmeVazioExpectedException() throws FilmeSemEstoqueException, LocadoraException {
-		
+	public void testLocacaoUserVazioErrorCollector() throws FilmeSemEstoqueException {
+
 		// 1 - cenario
 
-		LocacaoService service = new LocacaoService();
+		Filme filme = new Filme("Filme exemplo", 2, 4.0);
+
+		try {
+
+			// 2- ação
+			service.alugarFilme(null, filme);
+			Assert.fail("Deveria lançar uma exception aqui!");
+
+			// 3 - validação
+		} catch (LocadoraException e) {
+			// e.printStackTrace();
+			errorCollector.checkThat(e.getMessage(), CoreMatchers.is(CoreMatchers.equalTo("Usuario vazio")));
+		}
+
+	}
+
+	/*
+	 * Teste exception de usuario vazio usando o Assert. assertThat dentro de um try
+	 * catch
+	 */
+	@Test
+	public void testLocacaoUserVazioAssert() throws FilmeSemEstoqueException {
+
+		// 1 - cenario
+
+		Filme filme = new Filme("Filme exemplo", 2, 4.0);
+
+		try {
+
+			// 2- ação
+			service.alugarFilme(null, filme);
+			Assert.fail("Deveria lançar uma exception aqui!");
+
+			// 3 - validação
+		} catch (LocadoraException e) {
+			// e.printStackTrace();
+			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
+		}
+
+	}
+
+	/*
+	 * Teste exception de usuario vazio usando o ExpectedException.
+	 */
+
+	@Test
+	public void testFilmeVazioExpectedException() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenario
+
 		Usuario usuario = new Usuario("Eu sou o batman :D");
-		
+
 		/* 2 - ação / 3 - verificação */
-		
+
 		exp.expect(LocadoraException.class);
 		exp.expectMessage("Filme vazio");
-		
+
 		service.alugarFilme(usuario, null);
 	}
 }
