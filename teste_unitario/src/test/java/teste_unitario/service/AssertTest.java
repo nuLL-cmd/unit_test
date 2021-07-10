@@ -9,6 +9,10 @@ import teste_unitario.entity.Usuario;
 
 public class AssertTest {
 
+	/*
+	 * Classe de teste para os metodos da classe Assert do JUnit
+	 * 
+	 * */
 	@Test
 	public void test() {
 		 

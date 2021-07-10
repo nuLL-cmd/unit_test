@@ -9,10 +9,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.junit.runners.MethodSorters;
 
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
@@ -21,6 +23,12 @@ import teste_unitario.exception.FilmeSemEstoqueException;
 import teste_unitario.exception.LocadoraException;
 import teste_unitario.util.DataUtils;
 
+/*
+ * A anotação @FixMethodOrder, recebe um parametro que sera usado para definir a ordem no qual os testes devem ser executados.
+ * Porem se você usa o  Isolated (isolado) do prinicpio FIRST, onde cada metodo é indepndente e solado, nã há necessidade de usar
+ * esta anotação. 
+ * */
+@FixMethodOrder(value = MethodSorters.NAME_ASCENDING)
 public class LocacaoServiceTest {
 
 	private LocacaoService service;
@@ -85,7 +93,7 @@ public class LocacaoServiceTest {
 	 * Teste de validação de dados usando a classe ErrorCollector
 	 */
 	@Test
-	public void firstTest() throws FilmeSemEstoqueException, LocadoraException {
+	public void t1_validateTests() throws FilmeSemEstoqueException, LocadoraException {
 
 		// 1 - cenário
 
@@ -123,7 +131,7 @@ public class LocacaoServiceTest {
 	  * */
 
 	@Test(expected = FilmeSemEstoqueException.class)
-	public void testLocacaoFilmeSemEstoque() throws FilmeSemEstoqueException, LocadoraException {
+	public void t2_testLocacaoFilmeSemEstoque() throws FilmeSemEstoqueException, LocadoraException {
 
 		// 1 - cenario
 
@@ -145,9 +153,9 @@ public class LocacaoServiceTest {
 	 */
 
 	@Test
-	public void testLocacaoFilmeSemEstoqueDois() {
+	public void t3_testLocacaoFilmeSemEstoqueDois() {
 
-		// 1 - cenario
+		// 1 - cenário
 
 		Usuario usuario = new Usuario("Eu sou o batman :D");
 		Filme filme = new Filme("Filme do Pelé", 0, 4.0);
@@ -158,8 +166,6 @@ public class LocacaoServiceTest {
 			service.alugarFilme(usuario, filme);
 			Assert.fail("Deveria ter lançado uma exception");
 		} catch (Exception e) {
-
-			// e.printStackTrace();
 
 			// 3 - verificação
 
@@ -175,14 +181,14 @@ public class LocacaoServiceTest {
 	 */
 
 	@Test
-	public void testLocacaoFilmeSemEstoqueTres() throws FilmeSemEstoqueException, LocadoraException {
+	public void t4_testLocacaoFilmeSemEstoqueTres() throws FilmeSemEstoqueException, LocadoraException {
 
 		// cenario
 
 		Usuario usuario = new Usuario("Marco Aurelio");
 		Filme filme = new Filme("De volta para o futuro", 0, 5.0);
 
-		// açao
+		// ação
 
 		exp.expect(FilmeSemEstoqueException.class);
 		exp.expectMessage("Filme não tem estoque");
@@ -196,9 +202,9 @@ public class LocacaoServiceTest {
 	 * catch
 	 */
 	@Test
-	public void testLocacaoUserVazioErrorCollector() throws FilmeSemEstoqueException {
+	public void t5_testLocacaoUserVazioErrorCollector() throws FilmeSemEstoqueException {
 
-		// 1 - cenario
+		// 1 - cenário
 
 		Filme filme = new Filme("Filme exemplo", 2, 4.0);
 
@@ -210,7 +216,7 @@ public class LocacaoServiceTest {
 
 			// 3 - validação
 		} catch (LocadoraException e) {
-			// e.printStackTrace();
+			
 			errorCollector.checkThat(e.getMessage(), CoreMatchers.is(CoreMatchers.equalTo("Usuario vazio")));
 		}
 
@@ -221,9 +227,9 @@ public class LocacaoServiceTest {
 	 * catch
 	 */
 	@Test
-	public void testLocacaoUserVazioAssert() throws FilmeSemEstoqueException {
+	public void t6_testLocacaoUserVazioAssert() throws FilmeSemEstoqueException {
 
-		// 1 - cenario
+		// 1 - cenário
 
 		Filme filme = new Filme("Filme exemplo", 2, 4.0);
 
@@ -235,7 +241,7 @@ public class LocacaoServiceTest {
 
 			// 3 - validação
 		} catch (LocadoraException e) {
-			// e.printStackTrace();
+			
 			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
 		}
 
@@ -246,9 +252,9 @@ public class LocacaoServiceTest {
 	 */
 
 	@Test
-	public void testFilmeVazioExpectedException() throws FilmeSemEstoqueException, LocadoraException {
+	public void t7_testFilmeVazioExpectedException() throws FilmeSemEstoqueException, LocadoraException {
 
-		// 1 - cenario
+		// 1 - cenário
 
 		Usuario usuario = new Usuario("Eu sou o batman :D");
 
