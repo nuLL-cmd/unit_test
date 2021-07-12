@@ -17,7 +17,7 @@ import teste_unitario_tdd.service.CalculadoraService;
 
 
 /*
- * Classe de testes para exemplificar o tdd (Test drive develepment)
+ * Classe de testes para exemplificar o tdd (Test drive develepment) que é uma prática dos testes unitários.
  * aplicada a uma calculadora simples
  * 
  * Obss: não sera implementado todas as quatro operações - É apenas para exemplificar.

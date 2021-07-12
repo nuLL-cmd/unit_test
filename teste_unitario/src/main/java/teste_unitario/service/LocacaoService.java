@@ -1,6 +1,7 @@
 package teste_unitario.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,8 +49,25 @@ public class LocacaoService {
 			throw new LocadoraException("Usuario vazio");
 		}
 		
+	
+		for(int i = 0; i < filmes.size(); i++) {
+			switch (i) {
+			case 2:
+				valorTotal = (valorTotal - (filmes.get(i).getPrecoLocacao() * (25/100.0)));
+				break;
+			case 3:
+				valorTotal = valorTotal - (filmes.get(i).getPrecoLocacao() * (50/100.0));
+				break;
+			case 4:
+				valorTotal = valorTotal - (filmes.get(i).getPrecoLocacao() * (75/100.0));
+				break;
+			case 5:
+				valorTotal = valorTotal - (filmes.get(i).getPrecoLocacao());
+				break;
+			}
+		}
 		
-
+		
 		Locacao locacao = new Locacao();
 		locacao.setFilmes(filmes);
 		locacao.setUsuario(usuario);
@@ -60,11 +78,13 @@ public class LocacaoService {
 		// Entrega no dia seguinte
 		Date dataEntrega = new Date();
 		dataEntrega = adicionarDias(dataEntrega, 1);
+		
+		if (DataUtils.verificarDiaSemana(dataEntrega, Calendar.SUNDAY))
+			dataEntrega = adicionarDias(dataEntrega, 1);
+		
 		locacao.setDataRetorno(dataEntrega);
 
-		// Salvando a locacao...
-		// TODO adicionar método para salvar
-
+	
 		return locacao;
 	}
 

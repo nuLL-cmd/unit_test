@@ -19,7 +19,7 @@ public class AssertTest {
 		Assert.assertTrue(true);
 		Assert.assertFalse(false);
 		
-		Assert.assertEquals("Erro de comparação: ",1,2);
+		Assert.assertEquals("Erro de comparação: ",1,1);
 		Assert.assertTrue("value".equalsIgnoreCase("Value"));
 		Assert.assertEquals(0.51, 0.51,0.01);
 		Assert.assertEquals(Math.PI, 3.14,0.01);

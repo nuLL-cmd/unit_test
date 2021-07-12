@@ -1,8 +1,12 @@
 package teste_unitario.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeFalse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -12,9 +16,11 @@ import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -36,8 +42,9 @@ import teste_unitario.util.DataUtils;
 @FixMethodOrder(value = MethodSorters.NAME_ASCENDING)
 public class LocacaoServiceTest {
 
-	private LocacaoService service; 
-	
+	private LocacaoService service;
+			
+	private static String nameClass = "LocacaoServiceTest.java";
 	
 	private static int count;
 	@Rule
@@ -47,60 +54,61 @@ public class LocacaoServiceTest {
 	public ExpectedException exp = ExpectedException.none();
 
 	/*
-	 * A anotação @Before é usada para configurar execuções necessárias antes
-	 * de cada teste, ou seja, se tiver 5 testes dentro da classe, o @Before sera executado antes de todos
-	 * os 5 testes
-	 * */
+	 * A anotação @Before é usada para configurar execuções necessárias antes de
+	 * cada teste, ou seja, se tiver 5 testes dentro da classe, o @Before sera
+	 * executado antes de todos os 5 testes
+	 */
 	@Before
-	public void before() {	
-		count ++;
-		System.out.println("Iniciou o teste: "+count);
+	public void before() {
+		count++;
+		System.out.println("Iniciou o teste: "+ count);
 		service = new LocacaoService();
 
 	}
 
 	/*
-	 * A anotação @After é usada para configurar execuções necessárias depois
-	 * de cada teste, ou seja, se tiver 5 testes dentro da classe, o @After sera executado
-	 * depois de cada teste
-	 * */
+	 * A anotação @After é usada para configurar execuções necessárias depois de
+	 * cada teste, ou seja, se tiver 5 testes dentro da classe, o @After sera
+	 * executado depois de cada teste
+	 */
 	@After
 	public void after() {
-		System.out.println("Finalizou o teste: "+count);
+		System.out.println("Finalizou o teste: " + count);
 	}
-	
-	
+
 	/*
 	 * A anotação @BeforeClass é usada para configurar execuções necessárias antes
-	 * dos testes apneas uma vez, ou seja, se tiver 5 testes dentro da classe, o @BeforeClass sera executado antes de todos
-	 * os 5 testes
-	 * */
+	 * dos testes apneas uma vez, ou seja, se tiver 5 testes dentro da classe,
+	 * o @BeforeClass sera executado antes de todos os 5 testes
+	 */
 	@BeforeClass
 	public static void beforeClass() {
-		count = 0; 
-		System.out.println("Iniciou os testes.");
+		count = 0;
+		System.out.println("Iniciou os testes na classe: "+nameClass);
 		System.out.println("===========================");
-		
+
 	}
-	
+
 	/*
-	 * A anotação @AfterClass é usada para configurar execuções necessárias para toda a classe
-	 * apenas uma vez, ou seja, se tiver 5 testes dentro da classe, o @AfterClass sera executado
-	 * ao final de todos os 5 testes
-	 * */
+	 * A anotação @AfterClass é usada para configurar execuções necessárias para
+	 * toda a classe apenas uma vez, ou seja, se tiver 5 testes dentro da classe,
+	 * o @AfterClass sera executado ao final de todos os 5 testes
+	 */
 	@AfterClass
-	public static void AfterClass() {
+	public static void afterClass() {
 		System.out.println("===========================");
-		System.out.println("Total de testes executados: "+count);
-		
+		System.out.println("Total de testes executados: " + count);
+		System.out.println("");
+
 	}
-	
 
 	/*
 	 * Teste de validação de dados usando a classe ErrorCollector
 	 */
 	@Test
 	public void t1_validateTests() throws FilmeSemEstoqueException, LocadoraException {
+		
+		assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		// 1 - cenário
 
@@ -133,12 +141,11 @@ public class LocacaoServiceTest {
 
 	}
 
-	 /*
-	  * Tratamento de exceptions - Forma elegante
-	  * Colocando no expected a classe de exce??o esperada, você garante a
-	  * acertividade do teste quanto ao lan?amento de exceptions - teste feito para
-	  * simular uma falha e o tratamento
-	  * */
+	/*
+	 * Tratamento de exceptions - Forma elegante Colocando no expected a classe de
+	 * exce??o esperada, você garante a acertividade do teste quanto ao lan?amento
+	 * de exceptions - teste feito para simular uma falha e o tratamento
+	 */
 
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void t2_testLocacaoFilmeSemEstoque() throws FilmeSemEstoqueException, LocadoraException {
@@ -171,7 +178,6 @@ public class LocacaoServiceTest {
 		// 1 - cenário
 
 		Usuario usuario = new Usuario("Eu sou o batman :D");
-	
 
 		List<Filme> filmes = new ArrayList<>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
@@ -203,7 +209,7 @@ public class LocacaoServiceTest {
 		// cenario
 
 		Usuario usuario = new Usuario("Marco Aurelio");
-		
+
 		List<Filme> filmes = new ArrayList<>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 0, 5.0));
@@ -237,7 +243,7 @@ public class LocacaoServiceTest {
 
 			// 3 - validação
 		} catch (LocadoraException e) {
-			
+
 			errorCollector.checkThat(e.getMessage(), CoreMatchers.is(CoreMatchers.equalTo("Usuario vazio")));
 		}
 
@@ -264,7 +270,7 @@ public class LocacaoServiceTest {
 
 			// 3 - validação
 		} catch (LocadoraException e) {
-			
+
 			MatcherAssert.assertThat(e.getMessage(), equalTo("Usuario vazio"));
 
 		}
@@ -288,5 +294,111 @@ public class LocacaoServiceTest {
 		exp.expectMessage("Lista de filmes não pode estar vazia");
 
 		service.alugarFilme(usuario, null);
+	}
+
+	@Test
+	public void t8_testDdevePagar75PctNoFIlme() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenário
+
+		Usuario usuario = new Usuario("Marco Aurélio");
+
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0));
+		// 2 - ação
+
+		Locacao locacao = service.alugarFilme(usuario, filmes);
+
+		// 3 - verificação
+
+		MatcherAssert.assertThat(locacao.getValor(), is(13.75));
+
+	}
+
+	@Test
+	public void t9_testDevePagar50PctNoFIlme() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenário
+
+		Usuario usuario = new Usuario("Marco Aurélio");
+
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0),
+				new Filme("De volta para o futuro quatro", 2, 5.0));
+		// 2 - ação
+
+		Locacao locacao = service.alugarFilme(usuario, filmes);
+
+		// 3 - verificação
+
+		MatcherAssert.assertThat(locacao.getValor(), is(16.25));
+
+	}
+
+	@Test
+	public void t10_testDevePagar25PctNoFIlme() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenário
+
+		Usuario usuario = new Usuario("Marco Aurélio");
+
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0),
+				new Filme("De volta para o futuro quatro", 2, 5.0), new Filme("De volta para o futuro cinco", 2, 5.0));
+
+		// 2 - ação
+
+		Locacao locacao = service.alugarFilme(usuario, filmes);
+
+		// 3 - verificação
+
+		MatcherAssert.assertThat(locacao.getValor(), is(17.50));
+
+	}
+
+	@Test
+	public void t11_testDevePagar100PctNoFIlme() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenário
+
+		Usuario usuario = new Usuario("Marco Aurélio");
+
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0),
+				new Filme("De volta para o futuro quatro", 2, 5.0), new Filme("De volta para o futuro cinco", 2, 5.0),
+				new Filme("De volta para o futuro seis", 2, 5.0));
+
+		// 2 - ação
+
+		Locacao locacao = service.alugarFilme(usuario, filmes);
+
+		// 3 - verificação
+
+		MatcherAssert.assertThat(locacao.getValor(), is(17.50));
+
+	}
+
+	@Test
+	public void t12_testDeveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+		
+		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+
+		// 1 - cenário
+		
+		Usuario usuario = new Usuario("Marco Aurélio");
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0),
+				new Filme("De volta para o futuro quatro", 2, 5.0));
+
+		// 2 - acão
+
+		Locacao locacao = service.alugarFilme(usuario, filmes);
+		
+		// 3 - verificação
+		
+		boolean ehSegunda = DataUtils.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
+		Assert.assertTrue(ehSegunda);
+		
+		
 	}
 }
