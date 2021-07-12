@@ -253,6 +253,7 @@ public class LocacaoServiceTest {
 	 * Teste exception de usuario vazio usando o Assert. assertThat dentro de um try
 	 * catch
 	 */
+	
 	@Test
 	public void t6_testLocacaoUserVazioAssert() throws FilmeSemEstoqueException {
 
