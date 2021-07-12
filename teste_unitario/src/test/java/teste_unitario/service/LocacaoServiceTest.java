@@ -1,11 +1,14 @@
 package teste_unitario.service;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -33,7 +36,9 @@ import teste_unitario.util.DataUtils;
 @FixMethodOrder(value = MethodSorters.NAME_ASCENDING)
 public class LocacaoServiceTest {
 
-	private LocacaoService service;
+	private LocacaoService service; 
+	
+	
 	private static int count;
 	@Rule
 	public ErrorCollector errorCollector = new ErrorCollector();
@@ -130,7 +135,7 @@ public class LocacaoServiceTest {
 
 	 /*
 	  * Tratamento de exceptions - Forma elegante
-	  * Colocando no expected a classe de exce??o esperada, voc? garante a
+	  * Colocando no expected a classe de exce??o esperada, você garante a
 	  * acertividade do teste quanto ao lan?amento de exceptions - teste feito para
 	  * simular uma falha e o tratamento
 	  * */
@@ -155,7 +160,7 @@ public class LocacaoServiceTest {
 	/*
 	 * Segunda forma - Te da um controle maior sobre o teste, o que a primeira forma
 	 * No catch() será avaliado se a mensagem será a mesma da exception lançada, o
-	 * que vier depois depois da exception ainda sera executado Teste criado para
+	 * que vier depois depois da exception ainda sera executado. Teste criado para
 	 * simular uma exception. O SEU SUCESSO ESTA NA FALHA.
 	 * 
 	 */
@@ -260,7 +265,8 @@ public class LocacaoServiceTest {
 			// 3 - validação
 		} catch (LocadoraException e) {
 			
-			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
+			MatcherAssert.assertThat(e.getMessage(), equalTo("Usuario vazio"));
+
 		}
 
 	}
