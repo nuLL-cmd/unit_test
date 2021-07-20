@@ -57,7 +57,7 @@ public class CalculoDescontoLocacaoTest {
 
 	@After
 	public void after() {
-		System.out.println("Finalizoui o teste: "+count);
+		System.out.println("Finalizou o teste: "+count);
 		
 	}
 	
@@ -93,7 +93,6 @@ public class CalculoDescontoLocacaoTest {
 	}
 
 	@Test
-
 	public void t1_deveCalcularValorLocacaoComDescontos() throws FilmeSemEstoqueException, LocadoraException {
 
 		// 1 - cenário

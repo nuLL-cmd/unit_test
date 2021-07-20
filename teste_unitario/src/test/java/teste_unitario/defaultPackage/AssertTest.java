@@ -1,4 +1,4 @@
-package teste_unitario.service;
+package teste_unitario.defaultPackage;
 
 import static org.junit.Assert.assertSame;
 
@@ -35,7 +35,6 @@ public class AssertTest {
 		Usuario u3 = new Usuario("Fernando capato");
 		Usuario u4 = u3;
 		Usuario u5 = null;
-		
 		
 		
 		Assert.assertNull(u5);

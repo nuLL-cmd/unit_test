@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
@@ -20,7 +19,6 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -32,6 +30,8 @@ import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;
 import teste_unitario.exception.FilmeSemEstoqueException;
 import teste_unitario.exception.LocadoraException;
+import teste_unitario.metchers.DiaSemanaMatcher;
+import teste_unitario.metchers.MyMatcher;
 import teste_unitario.util.DataUtils;
 
 /*
@@ -106,6 +106,7 @@ public class LocacaoServiceTest {
 	 * Teste de validação de dados usando a classe ErrorCollector
 	 */
 	@Test
+
 	public void t1_validateTests() throws FilmeSemEstoqueException, LocadoraException {
 		
 		assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
@@ -114,7 +115,7 @@ public class LocacaoServiceTest {
 
 		Usuario usuario = new Usuario("Marco Aurelio");
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
@@ -154,7 +155,7 @@ public class LocacaoServiceTest {
 
 		Usuario usuario = new Usuario("Marco Aurelio");
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 
@@ -179,7 +180,7 @@ public class LocacaoServiceTest {
 
 		Usuario usuario = new Usuario("Eu sou o batman :D");
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 
@@ -210,7 +211,7 @@ public class LocacaoServiceTest {
 
 		Usuario usuario = new Usuario("Marco Aurelio");
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 0, 5.0));
 		// ação
@@ -231,7 +232,7 @@ public class LocacaoServiceTest {
 
 		// 1 - cenário
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
@@ -259,7 +260,7 @@ public class LocacaoServiceTest {
 
 		// 1 - cenário
 
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
@@ -398,6 +399,8 @@ public class LocacaoServiceTest {
 		// 3 - verificação
 		
 		boolean ehSegunda = DataUtils.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
+		MatcherAssert.assertThat(locacao.getDataRetorno(),MyMatcher.caEm(Calendar.MONDAY));
+		//Assert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
 		Assert.assertTrue(ehSegunda);
 		
 		

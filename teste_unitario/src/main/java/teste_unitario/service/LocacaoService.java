@@ -95,7 +95,7 @@ public class LocacaoService {
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Marco Aurelio");
 		
-		List<Filme> filmes = new ArrayList<>();
+		List<Filme> filmes = new ArrayList<Filme>();
 		
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 2, 5.0));
