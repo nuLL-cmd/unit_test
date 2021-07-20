@@ -21,7 +21,7 @@ import teste_unitario.service.LocacaoServiceTest;
  * os testes dentro dele serão novamente executados, gerando uma duplicata de execuções de testes.
  * 
  */
-@RunWith(value = Suite.class)
+//@RunWith(value = Suite.class)
 @SuiteClasses(value = {
     CalculoDescontoLocacaoTest.class,
     LocacaoServiceTest.class

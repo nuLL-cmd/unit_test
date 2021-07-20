@@ -16,7 +16,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mockito;
 
+import teste_unitario.dao.LocacaoDao;
+import teste_unitario.dao.LocacaoDaoFake;
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;
@@ -48,11 +51,16 @@ public class CalculoDescontoLocacaoTest {
 	@Parameter(value = 2)
 	public String title;
 
+	
 	@Before
 	public void before() {
 		count++;
 		System.out.println("Iniciou o teste: "+count);
+		LocacaoDao dao = Mockito.mock(LocacaoDao.class);
 		service = new LocacaoService();
+		service.setLocacaoDao(dao);
+		ConsultaSpcService consultaService = Mockito.mock(ConsultaSpcService.class);
+		service.setSpcService(consultaService);
 	}
 
 	@After

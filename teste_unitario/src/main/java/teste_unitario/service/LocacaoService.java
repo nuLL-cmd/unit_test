@@ -7,6 +7,7 @@ import java.util.List;
 
 import static teste_unitario.util.DataUtils.adicionarDias;
 
+import teste_unitario.dao.LocacaoDao;
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;
@@ -16,6 +17,10 @@ import teste_unitario.util.DataUtils;
 
 @SuppressWarnings("unused")
 public class LocacaoService {
+
+	private LocacaoDao dao;
+	
+	private ConsultaSpcService consultaService;
 
 	public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) throws FilmeSemEstoqueException, LocadoraException {
 		
@@ -68,6 +73,11 @@ public class LocacaoService {
 		}
 		
 		
+		if(consultaService.consultaRetorno(usuario)) {
+			
+			throw new LocadoraException("Usuario negativado");
+		}
+		
 		Locacao locacao = new Locacao();
 		locacao.setFilmes(filmes);
 		locacao.setUsuario(usuario);
@@ -85,12 +95,24 @@ public class LocacaoService {
 		locacao.setDataRetorno(dataEntrega);
 
 	
+		dao.salvar(locacao);
+
 		return locacao;
 	}
+	
+	
+	public void setLocacaoDao(LocacaoDao dao) {
+		this.dao = dao;
+	}
+	
+	public void setSpcService(ConsultaSpcService consultaService) {
+		this.consultaService = consultaService;
+	}
+
 
 	public static void main(String[] args) throws Exception {
 
-		// cenario
+		// cenário
 
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Marco Aurelio");
@@ -100,11 +122,11 @@ public class LocacaoService {
 		filmes.add(new Filme("De volta para o futuro", 2, 5.0));
 		filmes.add(new Filme("Batman do futuro", 2, 5.0));
 
-		// a��o
+		// ação
 
 		Locacao locacao = service.alugarFilme(usuario, filmes);
 
-		// verifica��o
+		// verificão
 		System.out.println(locacao.getValor() == 5.00);
 		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
 		System.out.println(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));

@@ -3,6 +3,7 @@ package teste_unitario.service;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assume.assumeFalse;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,10 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 
+import teste_unitario.dao.LocacaoDao;
+import teste_unitario.dao.LocacaoDaoFake;
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;
@@ -35,18 +39,23 @@ import teste_unitario.metchers.MyMatcher;
 import teste_unitario.util.DataUtils;
 
 /*
- * A anotação @FixMethodOrder, recebe um parametro que sera usado para definir a ordem no qual os testes devem ser executados.
- * Porem se você usa o  Isolated (isolado) do prinicpio FIRST, onde cada metodo é indepndente e solado, nã há necessidade de usar
- * esta anotação. 
+ * A anotaÃ§Ã£o @FixMethodOrder, recebe um parametro que sera usado para definir a ordem no qual os testes devem ser executados.
+ * Porem se vocÃª usa o  Isolated (isolado) do prinicpio FIRST, onde cada metodo Ã© indepndente e solado, nÃ£ hÃ¡ necessidade de usar
+ * esta anotaÃ§Ã£o. 
  * */
 @FixMethodOrder(value = MethodSorters.NAME_ASCENDING)
 public class LocacaoServiceTest {
 
 	private LocacaoService service;
-			
+
 	private static String nameClass = "LocacaoServiceTest.java";
-	
+
 	private static int count;
+
+	private ConsultaSpcService consultaService;
+
+	private LocacaoDao dao;
+
 	@Rule
 	public ErrorCollector errorCollector = new ErrorCollector();
 
@@ -61,8 +70,12 @@ public class LocacaoServiceTest {
 	@Before
 	public void before() {
 		count++;
-		System.out.println("Iniciou o teste: "+ count);
+		System.out.println("Iniciou o teste: " + count);
+		dao = Mockito.mock(LocacaoDao.class);
+		consultaService = Mockito.mock(ConsultaSpcService.class);
 		service = new LocacaoService();
+		service.setLocacaoDao(dao);
+		service.setSpcService(consultaService);
 
 	}
 
@@ -84,7 +97,7 @@ public class LocacaoServiceTest {
 	@BeforeClass
 	public static void beforeClass() {
 		count = 0;
-		System.out.println("Iniciou os testes na classe: "+nameClass);
+		System.out.println("Iniciou os testes na classe: " + nameClass);
 		System.out.println("===========================");
 
 	}
@@ -108,7 +121,7 @@ public class LocacaoServiceTest {
 	@Test
 
 	public void t1_validateTests() throws FilmeSemEstoqueException, LocadoraException {
-		
+
 		assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		// 1 - cenário
@@ -254,7 +267,7 @@ public class LocacaoServiceTest {
 	 * Teste exception de usuario vazio usando o Assert. assertThat dentro de um try
 	 * catch
 	 */
-	
+
 	@Test
 	public void t6_testLocacaoUserVazioAssert() throws FilmeSemEstoqueException {
 
@@ -382,11 +395,11 @@ public class LocacaoServiceTest {
 
 	@Test
 	public void t12_testDeveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
-		
+
 		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		// 1 - cenário
-		
+
 		Usuario usuario = new Usuario("Marco Aurélio");
 		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
 				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro três", 2, 5.0),
@@ -395,14 +408,39 @@ public class LocacaoServiceTest {
 		// 2 - acão
 
 		Locacao locacao = service.alugarFilme(usuario, filmes);
-		
+
 		// 3 - verificação
-		
+
 		boolean ehSegunda = DataUtils.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
-		MatcherAssert.assertThat(locacao.getDataRetorno(),MyMatcher.caEm(Calendar.MONDAY));
-		//Assert.assertThat(locacao.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
+		MatcherAssert.assertThat(locacao.getDataRetorno(), MyMatcher.caEm(Calendar.MONDAY));
+		// Assert.assertThat(locacao.getDataRetorno(), new
+		// DiaSemanaMatcher(Calendar.MONDAY));
 		Assert.assertTrue(ehSegunda);
+
+	}
+
+	@Test
+	public void t13_testeNaoAlugaFilmeUsuarioNegativado() throws FilmeSemEstoqueException, LocadoraException {
+
+		// 1 - cenário
+
+		Usuario usuario = new Usuario("Marco Aurélio");
+		List<Filme> filmes = Arrays.asList(new Filme("De volta para o futuro", 2, 5.0),
+				new Filme("De volta para o futuro dois", 2, 5.0), new Filme("De volta para o futuro trÃªs", 2, 5.0),
+				new Filme("De volta para o futuro quatro", 2, 5.0));
+
+		// 3 - verificação
+
 		
-		
+		when(consultaService.consultaRetorno(usuario)).thenReturn(true);
+	
+	
+		exp.expect(LocadoraException.class);
+		exp.expectMessage("Usuario negativado");
+
+		// 2 - ação
+
+		service.alugarFilme(usuario, filmes);
+
 	}
 }
