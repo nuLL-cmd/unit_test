@@ -19,7 +19,6 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 
 import teste_unitario.dao.LocacaoDao;
-import teste_unitario.dao.LocacaoDaoFake;
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;

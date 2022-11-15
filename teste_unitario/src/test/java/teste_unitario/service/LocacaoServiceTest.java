@@ -28,13 +28,11 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 
 import teste_unitario.dao.LocacaoDao;
-import teste_unitario.dao.LocacaoDaoFake;
 import teste_unitario.entity.Filme;
 import teste_unitario.entity.Locacao;
 import teste_unitario.entity.Usuario;
 import teste_unitario.exception.FilmeSemEstoqueException;
 import teste_unitario.exception.LocadoraException;
-import teste_unitario.metchers.DiaSemanaMatcher;
 import teste_unitario.metchers.MyMatcher;
 import teste_unitario.util.DataUtils;
 
